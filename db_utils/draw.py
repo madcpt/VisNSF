@@ -1,4 +1,8 @@
 import xml.dom.minidom as xd
+# import xml.etree.ElementTree as ET
+# tree = ET.parse('country_data.xml')
+# root = tree.getroot()
+
 import os
 import numpy as np
 
