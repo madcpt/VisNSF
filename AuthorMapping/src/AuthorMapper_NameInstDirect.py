@@ -1,14 +1,15 @@
 import os
+import random
 import sys
 from overrides import overrides
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-from AuthorMapping.COLUMNS import Column
+from AuthorMapping.COLUMNS import Column, CHAR_DROPOUT_RATE, INSTITUTION_DROPOUT_RATE
 from AuthorMapping.src.AuthorMapper import AuthorMapper
 
 
-class NameInstitutionMapper(AuthorMapper):
+class NameInstitutionDirectMapper(AuthorMapper):
     def __init__(self):
         super().__init__()
         self.name_id_dict = {}
@@ -16,6 +17,24 @@ class NameInstitutionMapper(AuthorMapper):
             if x.name not in self.name_id_dict:
                 self.name_id_dict[x.name] = []
             self.name_id_dict[x.name].append(x)
+
+    @overrides
+    def _dropout(self):
+        for x in self.test_samples:
+            name_new = ''
+            for char in x.name:
+                if random.random() >= CHAR_DROPOUT_RATE:
+                    name_new += char
+            x.name = name_new
+
+            if random.random() < INSTITUTION_DROPOUT_RATE:
+                x.institution = ''
+            else:
+                name_new = ''
+                for char in x.institution:
+                    if random.random() >= CHAR_DROPOUT_RATE:
+                        name_new += char
+                x.institution = name_new
 
     @overrides
     def _run_mapping(self, sample: Column):
@@ -31,6 +50,6 @@ class NameInstitutionMapper(AuthorMapper):
 
 
 if __name__ == '__main__':
-    mapper = NameInstitutionMapper()
+    mapper = NameInstitutionDirectMapper()
     result = mapper.run_test()
     print(result)
