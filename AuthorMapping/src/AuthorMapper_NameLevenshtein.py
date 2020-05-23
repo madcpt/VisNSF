@@ -8,7 +8,7 @@ import Levenshtein
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-from AuthorMapping.COLUMNS import Column, CHAR_DROPOUT_RATE
+from AuthorMapping.col_utils import Column, CHAR_DROPOUT_RATE
 from AuthorMapping.src.AuthorMapper import AuthorMapper
 
 
