@@ -137,7 +137,7 @@ class NameColGNNMapper(AuthorMapper):
         self.mapper_model.train()
         from tqdm import tqdm
         # for sample in tqdm(self.all_samples, total=len(self.all_samples)):
-        for sample in tqdm(self.test_samples[:test_num], total=len(self.all_samples)):
+        for sample in tqdm(self.test_samples[:test_num], total=test_num):
             try:
                 if sample.name in self.name_id_dict:
                     scores, labels = [], []
@@ -162,7 +162,7 @@ class NameColGNNMapper(AuthorMapper):
                     self.optimizer.zero_grad()
                     l += loss.detach().cpu().item()
             except:
-                print(scores, labels)
+                # print(scores, labels)
                 self.mapper_model.zero_grad()
         self.mapper_model.eval()
         return l / len(self.all_samples)
