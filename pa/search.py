@@ -64,21 +64,6 @@ def paper_acheiment_id(aprovalnum):
         papers.append((i['acheivementid'],i['title']))
     return papers
 
-"""def paperId(papers):
-    con_engine2 = pymysql.connect(host = '202.120.36.29', user = 'mobilenet', password = 'mobilenet', database = 'am_paper', port = 13307, charset = 'utf8')
-    cursor2 = con_engine2.cursor()
-    for i in papers:
-        length = len(i)
-        if length < 160:
-            sql = "select paper_id from am_paper where title = \'" + i + "\' limit 1;"
-        else:
-            sql = "select paper_id from am_paper where locate(\'" + i[int(0.94*length):] + "\',title) = " + str(int(0.9*length)) + " limit 1;"
-        print(sql)
-        cursor2.execute(sql)
-        ids = cursor2.fetchall()
-        for id in ids:
-            print(id)"""
-
 
 f = open('apro.txt','r')
 countline = 0
