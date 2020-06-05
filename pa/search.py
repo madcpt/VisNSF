@@ -47,12 +47,12 @@ class NSFC_API:
         "https": proxyMeta,
     }
     def query1(self, approval_num):
-        r = requests.get(self.base_url1 + str(approval_num))
+        r = requests.get(self.base_url1 + str(approval_num),proxies=Proxies)
         raw_data = r.json()['data']
         return self.__parse_raw_data(raw_data)
 
     def query2(self, acheivement_id):
-        r = requests.get(self.base_url2 + str(acheivement_id))
+        r = requests.get(self.base_url2 + str(acheivement_id),proxies=Proxies)
         raw_data = r.json()['data']
         return {'conf':raw_data['conferenceName'],'journal':raw_data['journalName']}
 
