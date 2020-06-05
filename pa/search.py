@@ -1,5 +1,4 @@
-
-import pymysql
+import sys
 import requests
 import random
 import time
@@ -85,11 +84,16 @@ f = open('apro.txt','r')
 countline = 0
 count = 0
 errs = 0
+begin = int(sys.argv[1])
+end = int(sys.argv[2])
 flag = False
 for l in f:
-    if countline <  121046:
+    if countline <  begin:
         countline += 1
         continue
+    if countline == end:
+        print('over!')
+        break
     print('line: ',countline) #爬到第几行了（即第几个grant），下次再开始就修改第72行的数值
     countline += 1
     count += 1
