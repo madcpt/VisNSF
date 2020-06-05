@@ -4,6 +4,7 @@ import random
 import time
 import insert
 
+
 def is_number(s):
     try:
         float(s)
@@ -27,14 +28,31 @@ def get_headers():
 class NSFC_API:
     base_url1 = 'http://output.nsfc.gov.cn/baseQuery/data/conclusionProjectInfo/'
     base_url2 = 'http://output.nsfc.gov.cn/baseQuery/data/resultsInfoData/'
-    proxies = {'http':'http://10.10.10.10:80','https':'https://10.10.10.10:8765'}
+    proxyHost = "dyn.horocn.com"
+    proxyPort = "50000"
+
+    # 代理隧道验证信息
+    proxyUser = "B2OP1668625479697389"
+    proxyPass = "y9qEQ2k1hp7vEApj"
+
+    proxyMeta = "http://%(user)s:%(pass)s@%(host)s:%(port)s" % {
+        "host": proxyHost,
+        "port": proxyPort,
+        "user": proxyUser,
+        "pass": proxyPass,
+    }
+
+    Proxies = {
+        "http": proxyMeta,
+        "https": proxyMeta,
+    }
     def query1(self, approval_num):
-        r = requests.get(self.base_url1 + str(approval_num),headers=get_headers())
+        r = requests.get(self.base_url1 + str(approval_num))
         raw_data = r.json()['data']
         return self.__parse_raw_data(raw_data)
 
     def query2(self, acheivement_id):
-        r = requests.get(self.base_url2 + str(acheivement_id),headers=get_headers())
+        r = requests.get(self.base_url2 + str(acheivement_id))
         raw_data = r.json()['data']
         return {'conf':raw_data['conferenceName'],'journal':raw_data['journalName']}
 
@@ -65,6 +83,8 @@ def paper_acheiment_id(aprovalnum):
     return papers
 
 
+
+
 f = open('apro.txt','r')
 countline = 0
 count = 0
@@ -84,9 +104,9 @@ for l in f:
     count += 1
     try:
         if count == 50:
-            time.sleep(1)
+            #time.sleep(0.1)
             count = 0
-        time.sleep(0.01)
+        #time.sleep(0.01)
         aproval = l.strip('\n')
         if not is_number(aproval):
             continue
@@ -94,7 +114,7 @@ for l in f:
         if not t:
             continue
         for i in t:
-            time.sleep(0.01)
+            #time.sleep(0.01)
             journal_conf = api.query2(i[0])#请求paper
             insert.insert_journal_conf(aproval,journal_conf['journal'],journal_conf['conf'],i[1])#插数据库的操作，不用数据库就注释掉insert模块
             flag = False
