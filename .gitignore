@@ -1,3 +1,7 @@
+# crawler logs
+last.txt
+search-log.tsv
+
 data/
 **/__pycache__/
 

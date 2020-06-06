@@ -1,8 +1,10 @@
-import sys
 import requests
 import random
 import time
 import insert
+from argparse import ArgumentParser
+from itertools import islice
+from tqdm import tqdm
 
 def is_number(s):
     try:
@@ -65,27 +67,29 @@ def paper_acheiment_id(aprovalnum):
     return papers
 
 
-f = open('apro.txt','r')
-countline = 0
-count = 0
-errs = 0
-begin = int(sys.argv[1])
-end = int(sys.argv[2])
+arg_parser = ArgumentParser()
+arg_parser.add_argument('--begin', type=int)
+arg_parser.add_argument('--end', type=int)
+args = arg_parser.parse_args()
+
+if args.begin is None:
+    with open('last.txt', 'r') as f:
+        begin, count_line, end = tuple(int(s.rstrip('\n')) for s in f)
+else:
+    begin = count_line = args.begin
+    end = args.end
+
 flag = False
-for l in f:
-    if countline <  begin:
-        countline += 1
-        continue
-    if countline == end:
-        print('over!')
-        break
-    print('line: ',countline) #爬到第几行了（即第几个grant），下次再开始就修改第72行的数值
-    countline += 1
-    count += 1
+f = open('apro.txt','r')
+errs = 0
+for count_line, l in tqdm(
+    enumerate(islice(f, count_line, end), count_line),
+    initial=count_line - begin,
+    total=end - begin
+):
     try:
-        if count == 50:
+        if count_line % 50 == 0:
             time.sleep(1)
-            count = 0
         time.sleep(0.01)
         aproval = l.strip('\n')
         if not is_number(aproval):
@@ -99,6 +103,10 @@ for l in f:
             insert.insert_journal_conf(aproval,journal_conf['journal'],journal_conf['conf'],i[1])#插数据库的操作，不用数据库就注释掉insert模块
             flag = False
             errs = 0
+    except KeyboardInterrupt:
+        with open('last.txt', 'w') as f:
+            print(begin, count_line, end, sep='\n', file=f)
+        break
     except:
         print("Error!  ",errs)
         if errs == 20 and flag:
