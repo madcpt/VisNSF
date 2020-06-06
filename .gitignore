@@ -4,6 +4,7 @@ data/
 # Editors
 .vscode/
 .idea/
+*.code-workspace
 
 # Vagrant
 .vagrant/
