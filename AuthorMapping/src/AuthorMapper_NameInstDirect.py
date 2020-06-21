@@ -5,7 +5,7 @@ from overrides import overrides
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-from AuthorMapping.COLUMNS import Column, CHAR_DROPOUT_RATE, INSTITUTION_DROPOUT_RATE
+from AuthorMapping.col_utils import Column, CHAR_DROPOUT_RATE, INSTITUTION_DROPOUT_RATE
 from AuthorMapping.src.AuthorMapper import AuthorMapper
 
 
@@ -40,7 +40,7 @@ class NameInstitutionDirectMapper(AuthorMapper):
     def _run_mapping(self, sample: Column):
         if sample.name in self.name_id_dict:
             for x in self.name_id_dict[sample.name]:
-                if x.institution == sample.institution:
+                if x.institution.__len__() > 0 and x.institution == sample.institution:
                     return x.author_id
             return self.name_id_dict[sample.name][0].author_id
         # for x in self.all_samples:

@@ -23,10 +23,12 @@ if __name__ == '__main__':
     connection = get_connector()
     try:
         with connection.cursor() as cursor:
+            import time
+            start = time.time()
             sql = "select * from am_paper.am_paper_author where am_paper.am_paper_author.author_id = 1000000003"
             cursor.execute(sql)
             result = cursor.fetchall()
-            print(result)
+            print(result, time.time() - start)
         # connection.commit()
     finally:
         connection.close()

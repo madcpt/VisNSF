@@ -1,0 +1,74 @@
+import os
+import random
+import sys
+from overrides import overrides
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+from AuthorMapping.col_utils import Column, CHAR_DROPOUT_RATE, COLLABORATION_AVAILABLE_RATE
+from AuthorMapping.src.AuthorMapper import AuthorMapper
+from AuthorMapping.preprocess import load_graph
+
+
+def cross_match(target_list, user_list):
+    # print(len(target_list), len(user_list))
+    # exit()
+    for x in user_list:
+        if x in target_list:
+            return True
+    return False
+
+
+class NameColMapper(AuthorMapper):
+    def __init__(self):
+        super().__init__()
+        self.name_id_dict = {}
+        for x in self.all_samples:
+            if x.name not in self.name_id_dict:
+                self.name_id_dict[x.name] = []
+            self.name_id_dict[x.name].append(x)
+        inst_authors_map, author_inst_map = load_graph()
+        # self.collaboration_map = load_graph()
+        self.collaboration_map = {}
+        for k, v in author_inst_map.items():
+            self.collaboration_map[k] = []
+            for inst in v:
+                self.collaboration_map[k].extend(inst_authors_map[inst])
+
+        for x in self.all_samples:
+            if x.author_id in self.collaboration_map:
+                x.collaborators = self.collaboration_map[x.author_id]
+        for x in self.test_samples:
+            if x.author_id in self.collaboration_map:
+                x.collaborators = [t for t in self.collaboration_map[x.author_id] if
+                                   random.random() < COLLABORATION_AVAILABLE_RATE]
+
+    @overrides
+    def _dropout(self):
+        for x in self.test_samples:
+            name_new = ''
+            for char in x.name:
+                if random.random() >= CHAR_DROPOUT_RATE:
+                    name_new += char
+            x.name = name_new
+
+    @overrides
+    def _run_mapping(self, sample: Column):
+        candidates = []
+        # if sample.name in self.name_id_dict:
+        #     return self.name_id_dict[sample.name][0].author_id
+        for x in self.all_samples:
+            if x.name == sample.name:
+                if cross_match(sample.collaborators, x.collaborators):
+                    return x.author_id
+                else:
+                    candidates.append(x.author_id)
+        if len(candidates) == 0:
+            return None
+        return candidates[0]
+
+
+if __name__ == '__main__':
+    mapper = NameColMapper()
+    result = mapper.run_test()
+    print(result)
