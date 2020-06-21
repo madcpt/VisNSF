@@ -1,0 +1,19 @@
+{
+  "vertexMap" : {
+    "CN.csv" : {
+      "[VertexLabel]" : "CN",
+      "author_id" : "author_id"
+    }
+  },
+  "edgeMap" : {
+    "CN_Cooperates_CN_edges.csv" : {
+      "[edge_left]" : {
+        "Left" : "CN.author_id"
+      },
+      "[EdgeLabel]" : "Cooperates",
+      "[edge_right]" : {
+        "Right" : "CN.author_id"
+      }
+    }
+  }
+}

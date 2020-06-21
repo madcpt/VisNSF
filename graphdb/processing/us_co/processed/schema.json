@@ -1,0 +1,25 @@
+{
+  "propertyKeys" : [ {
+    "name" : "author_id",
+    "dataType" : "Integer",
+    "cardinality" : "SINGLE"
+  } ],
+  "vertexLabels" : [{
+    "name" : "US",
+    "partition" : false,
+    "useStatic" : false
+  }],
+  "edgeLabels" : [{
+    "name" : "Cooperates",
+    "multiplicity" : "SIMPLE",
+    "signatures" : null,
+    "unidirected" : false
+  }],
+  "vertexIndexes" : [ {
+    "name" : "author_id_comp",
+    "propertyKeys" : [ "author_id" ],
+    "composite" : true,
+    "unique" : true
+  } ],
+  "vertexCentricIndexes" : [ ]
+}
