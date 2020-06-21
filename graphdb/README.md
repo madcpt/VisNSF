@@ -1,7 +1,7 @@
 # Structure
 
 - *conf*文件夹下是janusgraph连接后端的配置文件
-- *graphml*文件夹下是导出的网络图
+- ~~*graphml*文件夹下是导出的网络图~~
 - *processing*文件夹下是处理数据的代码
 
 # How to Use
